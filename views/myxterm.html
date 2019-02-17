@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{{image}}</title>
+    <link rel="stylesheet" href="/node_modules/xterm/dist/xterm.css" />
+    <link rel="stylesheet" href="/node_modules/xterm/dist/addons/fullscreen/fullscreen.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.auto.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/1.0.0/fetch.min.js"></script>
+    <script src="/node_modules/xterm/dist/xterm.js"></script>
+    <script src="/node_modules/xterm/dist/addons/fit/fit.js"></script>
+    <script src="/node_modules/xterm/dist/addons/attach/attach.js"></script>
+  </head>
+  <body>
+    <div class="topnav">
+      <a id="python" href="/run/python">python</a>
+      <a id="lolhens/ammonite" href="/run/lolhens/ammonite">scala</a>
+    </div> 
+    <div id="terminal"></div>
+    <script>
+      console.log({{image}});
+      const nav = document.getElementById('{{image}}');
+      if (nav)
+          nav.classList.add('active');
+
+      Terminal.applyAddon(attach);
+      Terminal.applyAddon(fit);
+      // The terminal
+      const term = new Terminal();
+      // This kinda makes sense
+      const container = document.getElementById('terminal');
+      term.open(container);
+      term.fit();
+      // Open the websocket connection to the backend
+      const protocol = (location.protocol === 'https:') ? 'wss://' : 'ws://';
+      const port = location.port ? `:${location.port}` : '';
+      const socketUrl = `${protocol}${location.hostname}${port}/docker?image={{image}}&cols=${term.cols}&rows=${term.rows}`;
+      const socket = new WebSocket(socketUrl);
+      // Attach the socket to the terminal
+      socket.onopen = (ev) => { term.attach(socket); };
+      // Not going to worry about close/error for the websocket
+    </script>
+  </body>
+</html>
