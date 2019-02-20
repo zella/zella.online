@@ -6,7 +6,7 @@ const mustacheExpress = require('mustache-express');
 
 const PORT = parseInt(process.env.PORT) || 3000;
 const PROCAAS_WS_URL = process.env.PROCAAS_URL;
-const PTY_PROXY_CMD = JSON.parse(process.env.PTY_PROXY_CMD)
+const PTY_PROXY_CMD = JSON.parse(process.env.PTY_PROXY_CMD || '[]')
 
 app.use('/', express.static(__dirname));
 
@@ -15,9 +15,9 @@ app.engine('html', mustacheExpress());
 app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
 
-app.get('/run/:image', function (req, res) {
+app.get('/run/*', function (req, res) {
     res.render('myxterm', {
-        image: req.params.image,
+        image: req.path.replace('/run/',''),
     });
 });
 
