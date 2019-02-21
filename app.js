@@ -16,8 +16,10 @@ app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
 
 app.get('/run/*', function (req, res) {
-    res.render('myxterm', {
-        image: req.path.replace('/run/',''),
+    path = req.path.replace('/run/','');
+    console.log(path);
+    res.render('myxterm', { 
+        image: path
     });
 });
 
@@ -25,6 +27,8 @@ expressWs.app.ws('/docker', function (ws, req) {
     const image = req.query.image;
     const cols = req.query.cols;
     const rows = req.query.rows;
+
+    console.log(image);
 
     //parameters to process( https://github.com/zella/procaas )
     const processCmd = PTY_PROXY_CMD;

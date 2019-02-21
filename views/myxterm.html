@@ -18,8 +18,10 @@
     </div> 
     <div id="terminal"></div>
     <script>
-      console.log({{image}});
-      const nav = document.getElementById('{{image}}');
+      const image = document.title;
+      console.log(image);
+   
+      const nav = document.getElementById(image);
       if (nav)
           nav.classList.add('active');
 
@@ -34,7 +36,8 @@
       // Open the websocket connection to the backend
       const protocol = (location.protocol === 'https:') ? 'wss://' : 'ws://';
       const port = location.port ? `:${location.port}` : '';
-      const socketUrl = `${protocol}${location.hostname}${port}/docker?image={{image}}&cols=${term.cols}&rows=${term.rows}`;
+      const encodedImage = encodeURIComponent(image)
+      const socketUrl = `${protocol}${location.hostname}${port}/docker?image=${encodedImage}&cols=${term.cols}&rows=${term.rows}`;
       const socket = new WebSocket(socketUrl);
       // Attach the socket to the terminal
       socket.onopen = (ev) => { term.attach(socket); };
